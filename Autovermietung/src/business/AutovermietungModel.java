@@ -1,28 +1,37 @@
 package business;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Vector;
 
-import gui.AutovermietungControl;
+import guiAutovermietungen.AutovermietungControl;
 import io.ConcreteCSVReaderCreator;
 import io.ConcreteTXTReaderCreator;
-import io.ConcreteTXTReaderProduct;
 import io.ReaderCreator;
 import io.ReaderProduct;
+import ownUtil.Observable;
+import ownUtil.Observer;
 
-public class AutovermietungModel {
+public class AutovermietungModel implements Observable {
 	
-	AutovermietungControl avc;
+	static AutovermietungControl avc;
+	static AutovermietungModel avm;
+	public Vector<Observer> observers = new Vector<Observer>();
 	Autovermietung av;
 	
 
-	public AutovermietungModel(AutovermietungControl autovermietungControl) {
+	private AutovermietungModel(AutovermietungControl autovermietungControl) {
 		this.avc = autovermietungControl;
 		this.av = null;
+	}
+	
+	public static AutovermietungModel getInstance(AutovermietungControl autovermietungControl) {
+		if(avm == null) {
+			avm = new AutovermietungModel(avc);
+		} 
+		return avm;
 	}
 
 
@@ -36,6 +45,7 @@ public class AutovermietungModel {
 
 	public void setAv(Autovermietung av) {
 		this.av = av;
+		notifyObservers();
 	}
 
 
@@ -76,6 +86,7 @@ public class AutovermietungModel {
 			System.out.println(Arrays.toString(line));
 			this.av = new Autovermietung(line[0], Float.parseFloat(line[1]), Float.parseFloat(line[2]), line[3], line[4].split("_"));
 			reader.schliesseDatei();
+			notifyObservers();
 	}
 	
 	public void leseAutovermietungAusDateiCSV() throws IOException {
@@ -85,6 +96,7 @@ public class AutovermietungModel {
 			System.out.println(Arrays.toString(line));
 			this.av = new Autovermietung(line[0], Float.parseFloat(line[1]), Float.parseFloat(line[2]), line[3], line[4].split("_"));
 			reader.schliesseDatei();
+			notifyObservers();
 	}
 	
 	public void schreibeAutovermietungenInCsvDatei() {
@@ -113,6 +125,24 @@ public class AutovermietungModel {
 		} else {
 		avc.zeigeFehlermeldungsfensterAn(
 				"Die Autovermietung wurde nicht gesetzt");
+		}
+	}
+
+	@Override
+	public void addObserver(Observer observer) {
+		observers.add(observer);
+		
+	}
+
+	@Override
+	public void removeObserver(Observer observer) {
+		observers.remove(observer);
+	}
+
+	@Override
+	public void notifyObservers() {
+		for(Observer observer : observers) {
+			observer.update();
 		}
 	}
 	
