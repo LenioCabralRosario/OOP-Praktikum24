@@ -5,8 +5,14 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 
 import gui.AutovermietungControl;
+import io.ConcreteCSVReaderCreator;
+import io.ConcreteTXTReaderCreator;
+import io.ConcreteTXTReaderProduct;
+import io.ReaderCreator;
+import io.ReaderProduct;
 
 public class AutovermietungModel {
 	
@@ -34,7 +40,7 @@ public class AutovermietungModel {
 
 
 
-
+	/*
 	public void leseAusDatei(String typ){
     	try {
       		if("csv".equals(typ)){
@@ -61,7 +67,26 @@ public class AutovermietungModel {
 				"Unbekannter Fehler beim Lesen!");
 		}
 	}
-		
+	*/
+	
+	public void leseAutovermietungAusDateiTXT() throws IOException {
+			ReaderCreator rc = new ConcreteTXTReaderCreator();
+			ReaderProduct reader = rc.factoryMethod();
+			String[] line = reader.leseAusDatei();
+			System.out.println(Arrays.toString(line));
+			this.av = new Autovermietung(line[0], Float.parseFloat(line[1]), Float.parseFloat(line[2]), line[3], line[4].split("_"));
+			reader.schliesseDatei();
+	}
+	
+	public void leseAutovermietungAusDateiCSV() throws IOException {
+			ReaderCreator rc = new ConcreteCSVReaderCreator();
+			ReaderProduct reader = rc.factoryMethod();
+			String[] line = reader.leseAusDatei();
+			System.out.println(Arrays.toString(line));
+			this.av = new Autovermietung(line[0], Float.parseFloat(line[1]), Float.parseFloat(line[2]), line[3], line[4].split("_"));
+			reader.schliesseDatei();
+	}
+	
 	public void schreibeAutovermietungenInCsvDatei() {
 		if(getAv() != null) {
 			try {
@@ -69,6 +94,7 @@ public class AutovermietungModel {
 				BufferedWriter aus 
 					= new BufferedWriter(new FileWriter("AutovermietungenAusgabe.csv", true));
 				aus.write(av.gibAutovermietungZurueck(';'));
+				System.out.println(av.gibAutovermietungZurueck(';'));
 				aus.close();
 				System.out.println(av.gibAutovermietungZurueck(';'));
 	   			avc.zeigeInformationsfensterAn(

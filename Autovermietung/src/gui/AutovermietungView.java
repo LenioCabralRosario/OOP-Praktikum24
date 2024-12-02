@@ -141,13 +141,23 @@ public class AutovermietungView {
 	    mnItmCsvImport.setOnAction(new EventHandler<ActionEvent>() {
 	    	@Override
 	        public void handle(ActionEvent e) {
-	       	 	avc.leseAusDatei("csv");
+	       	 	try {
+					avc.leseAusDatei("csv");
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 	    	}
 	    });
 	    mnItmTxtImport.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override
 		    public void handle(ActionEvent e) {
-		     	avc.leseAusDatei("txt");
+		     	try {
+					avc.leseAusDatei("txt");
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 		    }
     	});
 	    mnItmCsvExport.setOnAction(new EventHandler<ActionEvent>() {

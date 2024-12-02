@@ -1,5 +1,7 @@
 package gui;
 
+import java.io.IOException;
+
 import business.Autovermietung;
 import business.AutovermietungModel;
 import javafx.scene.control.Alert.AlertType;
@@ -54,8 +56,12 @@ public class AutovermietungControl {
         	"Fehler", meldung).zeigeMeldungsfensterAn();
     }
     
-    public void leseAusDatei(String typ) {
-    	avm.leseAusDatei(typ);
+    public void leseAusDatei(String typ) throws IOException {
+    	if(typ == "csv") {
+    		avm.leseAutovermietungAusDateiCSV();
+    	} else {
+    		avm.leseAutovermietungAusDateiTXT();
+    	}
     }
     
     public void schreibeAutovermietungenInCsvDatei() {
